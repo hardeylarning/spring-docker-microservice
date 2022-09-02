@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Multi Collapse</title>
+
+  
+    
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" 
+    rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+
+    <style>
+        .btn-2 {
+        border-radius: 0px;
+        /* border: 2px solid blue; */
+    }
+    </style>
+  </head>
+  <body class="container">
+    <h1 class="text-center mt-5">Job Portal</h1>
+
+    <nav class="nav nav-pills nav-tabs nav-fill mt-5">
+        <a id="job-nav" class="nav-item nav-link" data-toggle="collapse" data-target=".multi-collapse">Jobs</a>
+        <a id="candidate-nav" class="nav-item nav-link active" data-toggle="collapse" data-target=".multi-collapse">Candidates</a>
+    </nav>
+
+    <div class="collapse multi-collapse" id="job-collapse">
+        <div class="card mt-3">
+            <div class="card-body">
+                <h1 class="display-4">Available Jobs</h1>
+                <table class="table table-striped mt-2">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Description</th>
+                            <th>Company</th>
+                            <th>Salary</th>
+                            <th>Remote</th>
+                            <th>Skills</th>
+                            <th>Hostname</th>
+                        </tr>
+                    </thead>
+                    <tbody id="job-list">
+    
+                    </tbody>
+                </table>
+            </div>
+          </div>
+    </div>
+      
+    <div class="collapse multi-collapse show" id="candidate-collapse"> 
+        <div class="card mt-3">
+            <div class="card-body">
+                <h1 class="display-4">Available Candidates</h1>
+                <table class="table table-striped mt-2">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Skills</th>
+                            <th>Hostname</th>
+                        </tr>
+                    </thead>
+                    <tbody id="candidate-list">
+    
+                    </tbody>
+                </table>
+            </div>
+          </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+    <script>
+        const jobNav = document.getElementById('job-nav')
+        const jobList = document.getElementById('job-list')
+
+        const candidateNav = document.getElementById('candidate-nav')
+        const candidateList = document.getElementById('candidate-list')
+
+        jobNav.addEventListener('click', () => fetchJobs())
+
+        candidateNav.addEventListener('click', () => fetchCandidates())
+
+        const fetchJobs = async () => {
+            const uri = '/api/job/all'
+            const response = await fetch(uri);
+            const jobs = await response.json();
+            activeElement(jobNav)
+            showElement(document.getElementById('job-collapse'))
+            jobList.replaceChildren()
+            jobs.forEach((job, index) => addJobToTable(job, index + 1))
+        }
+
+        const addJobToTable = (job, index) => {
+            const template = `
+            <th>${index}</th>
+            <td>${job.description}</td>
+            <td>${job.company}</td>
+            <td>${job.salary}</td>
+            <td>${job.isRemote ? "Yes" : "No"}</td>
+            <td>${job.skills}</td>
+            <td>${job.hostName}</td>
+            `
+            const row = document.createElement('tr')
+            row.innerHTML = template
+            jobList.appendChild(row)
+        }
+
+        const fetchCandidates = async () => {
+            const uri = '/api/candidates/'
+            const response = await fetch(uri);
+            const candidates = await response.json();
+            activeElement(candidateNav)
+            showElement(document.getElementById('candidate-collapse'))
+            candidateList.replaceChildren()
+            candidates.forEach((candidate, index) => addCandidateToTable(candidate, index + 1))
+        }
+
+        const addCandidateToTable = (candidate, index) => {
+            const template = `
+            <th>${index}</th>
+            <td>${candidate.name}</td>
+            <td>${candidate.skills}</td>
+            <td>${candidate.hostName}</td>
+            `
+            const row = document.createElement('tr')
+            row.innerHTML = template
+            candidateList.appendChild(row)
+        }
+
+        const activeElement = (e) => {
+            document.querySelector("nav > a.active").classList.remove("active", "disabled")
+            e.classList.add("active", "disabled")
+        }
+
+        const showElement = (e) => {
+            document.querySelector("div.show").classList.remove("show")
+            
+            e.classList.add("show")
+        }
+
+        window.addEventListener('load', fetchCandidates())
+    </script>
+  </body>
+</html>

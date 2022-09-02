@@ -1,0 +1,70 @@
+[
+  {
+    "httpRequest": {
+      "path": "/health"
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "body": "Up"
+    }
+  },
+  {
+    "httpRequest": {
+      "path": "/job/search",
+      "queryStringParameters": {
+        "skills": [ "Scorer", "PK Taker" ]
+      }
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "body": [
+        {
+          "id": "mock-id-1",
+          "description": "mocked-desc-1",
+          "company": "mock",
+          "skills": ["skill-1", "skill-2"],
+          "salary": 200000,
+          "isRemote": false
+        },
+        {
+          "id": "mock-id-12",
+          "description": "mocked-desc-12",
+          "company": "mock2",
+          "skills": ["skill-12", "skill-22"],
+          "salary": 100000,
+          "isRemote": true
+        },
+        {
+          "id": "mock-id-13",
+          "description": "mocked-desc-13",
+          "company": "mock3",
+          "skills": ["skill-13", "skill-23"],
+          "salary": 300000,
+          "isRemote": false
+        }
+      ]
+    }
+  },
+  {
+    "httpRequest": {
+      "path": "/job/search",
+      "queryStringParameters": {
+        "skills": [ "Footballer" ]
+      }
+    },
+    "httpResponse": {
+      "statusCode": 404
+    }
+  },
+  {
+    "httpRequest": {
+      "path": "/job/search",
+      "queryStringParameters": {
+        "skills": [ "Killer" ]
+      }
+    },
+    "httpResponse": {
+      "statusCode": 500
+    }
+  }
+]
